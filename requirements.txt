@@ -1,5 +1,0 @@
-app.py
-model.pkl
-features.pkl
-vehicle.db
-requirements.txt
