@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | Vehicle Price Predictor</title>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+
+body{
+
+    background:#f4f7fc;
+
+}
+
+
+/* SIDEBAR */
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    width:260px;
+
+    height:100vh;
+
+    background:#061b3a;
+
+    padding:25px;
+
+    color:white;
+
+}
+
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+    margin-bottom:40px;
+
+}
+
+
+.logo i{
+
+    font-size:35px;
+
+    color:#00c6ff;
+
+}
+
+
+
+.sidebar ul{
+
+    list-style:none;
+
+}
+
+
+
+.sidebar li{
+
+    margin:18px 0;
+
+}
+
+
+.sidebar a{
+
+    text-decoration:none;
+
+    color:#dbe8ff;
+
+    display:flex;
+
+    gap:15px;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+}
+
+
+
+.sidebar a:hover,
+.sidebar .active a{
+
+    background:#0066ff;
+
+    color:white;
+
+}
+
+
+
+/* MAIN */
+
+
+.main-content{
+
+    margin-left:260px;
+
+    padding:30px;
+
+}
+
+
+
+
+/* TOP BAR */
+
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+.topbar h1{
+
+    font-size:32px;
+
+    color:#102a43;
+
+}
+
+
+.topbar p{
+
+    color:#777;
+
+}
+
+
+
+.profile i{
+
+    font-size:45px;
+
+    color:#0066ff;
+
+}
+
+
+
+
+/* CARDS */
+
+
+.cards{
+
+    margin-top:30px;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+
+
+.card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.card i{
+
+    font-size:35px;
+
+    color:#0066ff;
+
+}
+
+
+
+.card h3{
+
+    margin:15px 0;
+
+    color:#666;
+
+}
+
+
+
+.card h2{
+
+    font-size:30px;
+
+}
+
+
+
+
+/* CHART */
+
+
+.chart-section{
+
+    margin-top:30px;
+
+}
+
+
+
+.chart-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+
+
+/* TABLE */
+
+
+.recent-section{
+
+    margin-top:30px;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+}
+
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+
+}
+
+
+
+th{
+
+    background:#061b3a;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+
+td{
+
+    padding:15px;
+
+    border-bottom:1px solid #ddd;
+
+}
+
+
+
+tr:hover{
+
+    background:#f2f7ff;
+
+}
+
+
+
+/* MOBILE */
+
+
+@media(max-width:1000px){
+
+
+.cards{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+
+}
+
+
+@media(max-width:700px){
+
+
+.sidebar{
+
+position:relative;
+
+width:100%;
+
+height:auto;
+
+}
+
+
+.main-content{
+
+margin-left:0;
+
+}
+
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+
+<!-- SIDEBAR -->
+
+
+<div class="sidebar">
+
+
+<div class="logo">
+
+<i class="fas fa-car-side"></i>
+
+<span>Vehicle AI</span>
+
+</div>
+
+
+
+<ul>
+
+
+<li class="active">
+
+<a href="/dashboard">
+
+<i class="fas fa-chart-line"></i>
+
+Dashboard
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/predict">
+
+<i class="fas fa-car"></i>
+
+Predict Price
+
+</a>
+
+</li>
+
+
+
+<li>
+
+<a href="/history">
+
+<i class="fas fa-clock"></i>
+
+History
+
+</a>
+
+</li>
+
+
+
+{% if session.role == 'admin' %}
+
+<li>
+
+<a href="/admin">
+
+<i class="fas fa-user-shield"></i>
+
+Admin
+
+</a>
+
+</li>
+
+{% endif %}
+
+
+
+<li>
+
+<a href="/logout">
+
+<i class="fas fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+<!-- MAIN CONTENT -->
+
+
+<div class="main-content">
+
+
+<div class="topbar">
+
+
+<div>
+
+<h1>Dashboard</h1>
+
+<p>
+Welcome, {{session.name}}
+</p>
+
+
+</div>
+
+
+
+<div class="profile">
+
+<i class="fas fa-user-circle"></i>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- CARDS -->
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<i class="fas fa-car"></i>
+
+<h3>Total Predictions</h3>
+
+<h2>{{total_predictions}}</h2>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fas fa-indian-rupee-sign"></i>
+
+<h3>Average Price</h3>
+
+<h2>
+₹ {{avg_price}}
+</h2>
+
+</div>
+
+
+
+
+<div class="card">
+
+<i class="fas fa-chart-line"></i>
+
+<h3>Accuracy</h3>
+
+<h2>96.4%</h2>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fas fa-users"></i>
+
+<h3>Users</h3>
+
+<h2>128</h2>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- CHART -->
+
+
+<div class="chart-section">
+
+
+<div class="chart-card">
+
+
+<h2>
+Prediction Analytics
+</h2>
+
+
+<canvas id="chart"></canvas>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- TABLE -->
+
+
+<div class="recent-section">
+
+
+<h2>
+Recent Predictions
+</h2>
+
+
+
+<table>
+
+
+<tr>
+
+<th>ID</th>
+
+<th>Vehicle</th>
+
+<th>Price</th>
+
+<th>Date</th>
+
+</tr>
+
+
+
+{% for item in recent_predictions %}
+
+
+<tr>
+
+<td>{{item.id}}</td>
+
+<td>{{item.car_name}}</td>
+
+<td>₹ {{item.predicted_price}}</td>
+
+<td>{{item.created_at}}</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+
+</table>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+new Chart(
+document.getElementById("chart"),
+
+{
+
+type:"line",
+
+data:{
+
+
+labels:[
+"Jan",
+"Feb",
+"Mar",
+"Apr",
+"May",
+"Jun"
+],
+
+
+datasets:[{
+
+label:"Vehicle Price",
+
+data:[
+5,
+8,
+6,
+12,
+15,
+20
+],
+
+tension:.4
+
+}]
+
+
+}
+
+}
+
+);
+
+
+</script>
+
+
+
+</body>
+
+</html>

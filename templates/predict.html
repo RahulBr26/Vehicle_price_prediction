@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Predict Vehicle Price</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+min-height:100vh;
+display:flex;
+color:white;
+overflow-x:hidden;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:260px;
+background:#020617;
+height:100vh;
+padding:30px;
+position:fixed;
+left:0;
+top:0;
+box-shadow:5px 0 20px rgba(0,0,0,.4);
+}
+
+.logo{
+font-size:25px;
+font-weight:bold;
+margin-bottom:40px;
+color:#38bdf8;
+}
+
+.sidebar a{
+display:block;
+padding:15px;
+margin-bottom:12px;
+text-decoration:none;
+color:white;
+border-radius:12px;
+transition:.3s;
+}
+
+.sidebar a:hover{
+background:#2563eb;
+transform:translateX(10px);
+}
+
+.active{
+background:#2563eb;
+}
+
+/* Main */
+
+.main{
+margin-left:260px;
+padding:40px;
+width:100%;
+}
+
+.header{
+margin-bottom:30px;
+animation:fadeIn 1s ease;
+}
+
+.header h1{
+font-size:38px;
+margin-bottom:10px;
+}
+
+.header p{
+opacity:.8;
+}
+
+/* Card */
+
+.predict-card{
+background:white;
+color:#111827;
+border-radius:25px;
+padding:35px;
+max-width:900px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
+animation:slideUp .8s ease;
+}
+
+.car-animation{
+text-align:center;
+font-size:70px;
+color:#2563eb;
+margin-bottom:20px;
+animation:drive 2s infinite;
+}
+
+@keyframes drive{
+0%{transform:translateX(-10px);}
+50%{transform:translateX(10px);}
+100%{transform:translateX(-10px);}
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.input-box label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+}
+
+.input-box input,
+.input-box select{
+width:100%;
+padding:12px;
+border:1px solid #d1d5db;
+border-radius:10px;
+font-size:15px;
+}
+
+.input-box input:focus,
+.input-box select:focus{
+outline:none;
+border-color:#2563eb;
+}
+
+.full{
+grid-column:span 2;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#2563eb;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+transition:.3s;
+}
+
+button:hover{
+background:#1d4ed8;
+transform:scale(1.03);
+}
+
+.result{
+margin-top:25px;
+padding:25px;
+border-radius:20px;
+background:#eff6ff;
+text-align:center;
+animation:pulse 1.5s infinite;
+}
+
+.result h2{
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.result h1{
+font-size:42px;
+color:#16a34a;
+}
+
+@keyframes pulse{
+50%{
+transform:scale(1.03);
+}
+}
+
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+}
+to{
+opacity:1;
+}
+}
+
+@media(max-width:768px){
+
+.sidebar{
+display:none;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.full{
+grid-column:span 1;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<i class="fas fa-car-side"></i>
+Vehicle AI
+</div>
+
+<a href="/dashboard">
+<i class="fas fa-chart-line"></i>
+ Dashboard
+</a>
+
+<a href="/predict" class="active">
+<i class="fas fa-car"></i>
+ Predict Price
+</a>
+
+<a href="/history">
+<i class="fas fa-clock"></i>
+ History
+</a>
+
+<a href="/logout">
+<i class="fas fa-sign-out-alt"></i>
+ Logout
+</a>
+
+</div>
+
+<div class="main">
+
+<div class="header">
+<h1>Vehicle Price Prediction</h1>
+<p>Predict the market value of your vehicle using AI</p>
+</div>
+
+<div class="predict-card">
+
+<div class="car-animation">
+<i class="fas fa-car-side"></i>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="form-grid">
+
+<div class="input-box">
+<label>Car Name</label>
+<input type="text" name="car_name" required>
+</div>
+
+<div class="input-box">
+<label>Year</label>
+<input type="number" name="year" required>
+</div>
+
+<div class="input-box">
+<label>Present Price (Lakhs)</label>
+<input type="number" step="0.01" name="present_price" required>
+</div>
+
+<div class="input-box">
+<label>Kilometers Driven</label>
+<input type="number" name="kms" required>
+</div>
+
+<div class="input-box">
+<label>Fuel Type</label>
+<select name="fuel">
+<option>Petrol</option>
+<option>Diesel</option>
+<option>CNG</option>
+</select>
+</div>
+
+<div class="input-box">
+<label>Seller Type</label>
+<select name="seller">
+<option>Dealer</option>
+<option>Individual</option>
+</select>
+</div>
+
+<div class="input-box">
+<label>Transmission</label>
+<select name="transmission">
+<option>Manual</option>
+<option>Automatic</option>
+</select>
+</div>
+
+<div class="input-box">
+<label>Owner Count</label>
+<select name="owner">
+<option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+</select>
+</div>
+
+<div class="input-box full">
+<label>Vehicle Image</label>
+<input type="file" name="image">
+</div>
+
+<div class="full">
+<button type="submit">
+<i class="fas fa-bolt"></i>
+ Predict Price
+</button>
+</div>
+
+</div>
+
+</form>
+
+{% if prediction %}
+
+<div class="result">
+<h2>Estimated Vehicle Price</h2>
+<h1>₹ {{ prediction }} Lakh</h1>
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>
